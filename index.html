@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observaciones</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --fg: #1d2430; --muted: #5f6b7a; --line: #e3e7ec;
+    --bar: #2f6fb0; --bad: #c0392b; --ok: #2e8540; --soft: #a9b4c2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14181e; --panel: #1c222a; --fg: #e8edf3; --muted: #9aa6b4; --line: #2c343e; --bar: #5b9bd9; --bad: #ec6b5e; --ok: #5cbf72; --soft: #55606d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 40px; }
+  h1 { font-size: 2rem; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 6px; }
+  .lede { margin: 12px 0 20px; line-height: 1.55; max-width: 75ch; }
+  .lede b { font-variant-numeric: tabular-nums; }
+  .estado { font-size: .82rem; color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .estado button { font: inherit; font-size: .82rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .card h2 { font-size: .8rem; font-weight: 600; color: var(--muted); margin: 0 0 6px; text-transform: uppercase; letter-spacing: .03em; }
+  .big { font-size: 2.4rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .note { font-size: .82rem; color: var(--muted); margin: 6px 0 0; }
+  .main { border-left: 4px solid var(--bad); }
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .charts h3, .tabla h3 { font-size: 1.05rem; margin: 0 0 12px; }
+  .bar-row { display: grid; grid-template-columns: minmax(90px, 40%) 1fr; gap: 10px; align-items: center; margin: 7px 0; font-size: .86rem; }
+  .bar-label { color: var(--muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .bar { height: 18px; border-radius: 0 4px 4px 0; background: var(--bar); min-width: 3px; }
+  .bar.fuera { background: var(--bad); }
+  .bar.dentro { background: var(--soft); }
+  .bar-val { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .legend { display: flex; gap: 14px; font-size: .8rem; color: var(--muted); margin: -4px 0 8px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th { text-align: left; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tarde { color: var(--bad); font-weight: 600; }
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  select { font: inherit; font-size: .85rem; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  td.pend { color: var(--bad); font-weight: 600; white-space: nowrap; }
+  td.ok { color: var(--ok); font-weight: 600; white-space: nowrap; }
+  .desc { color: var(--muted); font-size: .8rem; margin-top: 3px; line-height: 1.4; }
+  footer { margin-top: 24px; font-size: .8rem; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Observaciones</h1>
+  <p class="sub">Control y seguimiento de observaciones técnicas – Alcantarillado</p>
+  <div class="estado">
+    <span id="estado">Cargando datos…</span>
+    <button id="recargar" type="button">⟳ Actualizar</button>
+  </div>
+
+  <p class="lede" id="lede"></p>
+
+  <div class="kpis">
+    <div class="card main"><h2>Pendientes</h2><div class="big" id="k-pend">—</div><p class="note">Sin fecha de subsanación</p></div>
+    <div class="card"><h2>Subsanadas</h2><div class="big" id="k-sub">—</div><p class="note">De <span id="k-total">—</span> registradas</p></div>
+    <div class="card"><h2>Avance</h2><div class="big" id="k-pct">—</div><p class="note">Subsanadas sobre el total</p></div>
+    <div class="card"><h2>Fuera de plazo</h2><div class="big" id="k-venc">—</div><p class="note">Más de <span class="plazo"></span> días abiertas</p></div>
+    <div class="card"><h2>Días abiertas (prom.)</h2><div class="big" id="k-prom">—</div><p class="note">La más antigua: <span id="k-max">—</span> días</p></div>
+  </div>
+
+  <div class="charts">
+    <section class="card"><h3>Pendientes por área</h3><div id="c-area"></div></section>
+    <section class="card"><h3>Pendientes por responsable</h3><div id="c-resp"></div></section>
+    <section class="card"><h3>Pendientes por sector</h3><div id="c-sector"></div></section>
+    <section class="card"><h3>Antigüedad de las pendientes</h3>
+      <div class="legend"><span><i style="background:var(--soft)"></i>Dentro de plazo</span><span><i style="background:var(--bad)"></i>Fuera de plazo</span></div>
+      <div id="c-edad"></div></section>
+  </div>
+
+  <section class="card tabla">
+    <h3>Observaciones</h3>
+    <div class="filtros">
+      <select id="f-estado" aria-label="Filtrar por estado"><option value="pend">Pendientes</option><option value="sub">Subsanadas</option><option value="">Todas</option></select>
+      <select id="f-area" aria-label="Filtrar por área"><option value="">Todas las áreas</option></select>
+      <select id="f-resp" aria-label="Filtrar por responsable"><option value="">Todos los responsables</option></select>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>ID</th><th>Estado</th><th>Observación</th><th>Área</th><th>Sector</th><th>Responsable</th><th>Registrada</th><th>Subsanada</th><th class="num">Días abiertas</th></tr></thead>
+        <tbody id="tabla"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Datos de la hoja «Registro de Observaciones» del archivo «Control de observaciones de alcantarillado.xlsx». Una observación está pendiente cuando no tiene fecha de subsanación. Los días abiertos se cuentan desde la fecha de registro hasta hoy. Plazo objetivo: <span class="plazo"></span> días.
+  </footer>
+</div>
+
+<script>
+  // ===== Configuración =====
+  const PLAZO_DIAS = 15;
+  const RECARGA_MIN = 5; // vuelve a pedir los datos cada 5 minutos
+
+  // ===== Datos (datos.json se actualiza automáticamente desde el Excel) =====
+  async function leerDatos() {
+    const resp = await fetch("datos.json?t=" + Date.now(), { cache: "no-store" });
+    if (!resp.ok) throw new Error("datos.json respondió " + resp.status);
+    return resp.json();
+  }
+
+  // ===== Cálculos =====
+  const hoy = () => { const d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); };
+  function diasAbiertos(r) {
+    if (r.fecha_subsanacion || !r.fecha_registro) return null;
+    const t = Date.parse(r.fecha_registro + "T00:00:00Z");
+    return Number.isFinite(t) ? Math.max(0, Math.round((hoy() - t) / 86400000)) : null;
+  }
+  function contar(rows, clave, vacio) {
+    const m = new Map();
+    for (const r of rows) { const k = clave(r) || vacio; m.set(k, (m.get(k) || 0) + 1); }
+    return [...m].map(([k, n]) => ({ k, n })).sort((a, b) => b.n - a.n);
+  }
+
+  // ===== Dibujo =====
+  const $ = (id) => document.getElementById(id);
+  function barras(cont, datos, claseFn) {
+    cont.replaceChildren();
+    const max = Math.max(1, ...datos.map((d) => d.n));
+    for (const d of datos) {
+      const fila = document.createElement("div"); fila.className = "bar-row";
+      const lab = document.createElement("div"); lab.className = "bar-label"; lab.textContent = d.k; lab.title = d.k;
+      const track = document.createElement("div"); track.className = "bar-track";
+      const bar = document.createElement("div"); bar.className = "bar" + (claseFn ? " " + claseFn(d) : "");
+      bar.style.width = d.n ? (d.n / max * 85) + "%" : "0";
+      bar.title = `${d.k}: ${d.n}`;
+      const val = document.createElement("span"); val.className = "bar-val"; val.textContent = d.n;
+      track.append(bar, val); fila.append(lab, track); cont.append(fila);
+    }
+    if (!datos.length) cont.textContent = "No hay observaciones pendientes.";
+  }
+
+  let PEND = [], TODAS = [];
+  function pintar(rows) {
+    rows.forEach((r) => (r.dias = diasAbiertos(r)));
+    const pend = rows.filter((r) => !r.fecha_subsanacion);
+    PEND = pend; TODAS = rows;
+    const total = rows.length, sub = total - pend.length;
+    const dias = pend.map((r) => r.dias).filter((d) => d != null);
+    const venc = dias.filter((d) => d > PLAZO_DIAS).length;
+    const prom = dias.length ? Math.round(dias.reduce((a, b) => a + b, 0) / dias.length) : 0;
+    const max = dias.length ? Math.max(...dias) : 0;
+    const pct = total ? (sub / total * 100) : 0;
+
+    $("k-pend").textContent = pend.length;
+    $("k-sub").textContent = sub;
+    $("k-total").textContent = total;
+    $("k-pct").textContent = pct.toFixed(1) + "%";
+    $("k-venc").textContent = venc;
+    $("k-prom").textContent = prom;
+    $("k-max").textContent = max;
+    document.querySelectorAll(".plazo").forEach((e) => (e.textContent = PLAZO_DIAS));
+
+    const porArea = contar(pend, (r) => r.area, "Sin área");
+    const lede = $("lede"); lede.replaceChildren();
+    const b = (t) => { const x = document.createElement("b"); x.textContent = t; return x; };
+    lede.append("Hay ", b(pend.length), " observaciones pendientes de ", b(total), " registradas, y ", b(venc),
+      ` llevan más de ${PLAZO_DIAS} días abiertas.`);
+    if (porArea.length) lede.append(" El área con más pendientes es ", b(porArea[0].k), ` (${porArea[0].n}).`);
+
+    barras($("c-area"), porArea);
+    barras($("c-resp"), contar(pend, (r) => r.responsable, "Sin asignar"));
+    barras($("c-sector"), contar(pend, (r) => (r.sector.toUpperCase() === "GENERAL" ? "General (proyecto)" : r.sector), "Sin sector"));
+    const tramos = [
+      { k: `0 a ${PLAZO_DIAS} días`, a: 0, b: PLAZO_DIAS, fuera: false },
+      { k: `${PLAZO_DIAS + 1} a 30 días`, a: PLAZO_DIAS + 1, b: 30, fuera: true },
+      { k: "31 a 60 días", a: 31, b: 60, fuera: true },
+      { k: "Más de 60 días", a: 61, b: Infinity, fuera: true },
+    ].map((t) => ({ ...t, n: dias.filter((d) => d >= t.a && d <= t.b).length }));
+    barras($("c-edad"), tramos, (d) => (d.fuera ? "fuera" : "dentro"));
+
+    llenarFiltro($("f-area"), contar(rows, (r) => r.area, "Sin área").map((d) => d.k));
+    llenarFiltro($("f-resp"), contar(rows, (r) => r.responsable, "Sin asignar").map((d) => d.k));
+    pintarTabla();
+  }
+
+  function llenarFiltro(sel, valores) {
+    const actual = sel.value;
+    while (sel.options.length > 1) sel.remove(1);
+    for (const v of valores) sel.add(new Option(v, v));
+    sel.value = valores.includes(actual) ? actual : "";
+  }
+
+  function pintarTabla() {
+    const fe = $("f-estado").value, fa = $("f-area").value, fr = $("f-resp").value;
+    const tb = $("tabla"); tb.replaceChildren();
+    const base = fe === "pend" ? PEND : fe === "sub" ? TODAS.filter((r) => r.fecha_subsanacion) : TODAS;
+    const filas = base.filter((r) => (!fa || (r.area || "Sin área") === fa) && (!fr || (r.responsable || "Sin asignar") === fr))
+      .sort((a, b) => (b.dias ?? -1) - (a.dias ?? -1) || a.id.localeCompare(b.id));
+    const fecha = (s) => (s ? s.split("-").reverse().join("/") : "");
+    for (const r of filas) {
+      const tr = tb.insertRow();
+      const c = (v, cls) => { const td = tr.insertCell(); td.textContent = v || "—"; if (cls) td.className = cls; return td; };
+      c(r.id);
+      const est = c(r.fecha_subsanacion ? "Subsanada" : "Pendiente", r.fecha_subsanacion ? "ok" : "pend");
+      const obs = c(r.observacion);
+      if (r.descripcion) { const d = document.createElement("div"); d.className = "desc"; d.textContent = r.descripcion; obs.append(d); }
+      c(r.area); c([r.sector, r.cuadrante].filter(Boolean).join(" · ")); c(r.responsable || "Sin asignar");
+      c(fecha(r.fecha_registro)); c(fecha(r.fecha_subsanacion));
+      c(r.dias == null ? "—" : String(r.dias), "num" + (r.dias > PLAZO_DIAS ? " tarde" : ""));
+    }
+    if (!filas.length) { const td = tb.insertRow().insertCell(); td.colSpan = 9; td.textContent = "No hay observaciones con ese filtro."; }
+  }
+  $("f-estado").addEventListener("change", pintarTabla);
+  $("f-area").addEventListener("change", pintarTabla);
+  $("f-resp").addEventListener("change", pintarTabla);
+
+  // ===== Arranque =====
+  async function cargar() {
+    try {
+      const d = await leerDatos();
+      pintar(d.filas.map((r) => ({ ...r })));
+      const f = new Date(d.actualizado);
+      $("estado").textContent = "Datos del Excel al " +
+        f.toLocaleDateString("es-PE", { day: "2-digit", month: "2-digit", year: "numeric" }) + ", " +
+        f.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" }) + " · se actualiza cada hora";
+    } catch (e) {
+      console.warn(e);
+      $("estado").textContent = "⚠️ No se pudieron cargar los datos. Prueba con Actualizar en un momento.";
+    }
+  }
+  $("recargar").addEventListener("click", cargar);
+  cargar();
+  setInterval(cargar, RECARGA_MIN * 60 * 1000);
+</script>
+</body>
+</html>
