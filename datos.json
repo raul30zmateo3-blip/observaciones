@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-22T00:55:36+00:00",
+ "actualizado": "2026-11-22T01:00:36+00:00",
  "filas": [
   {
    "id": "OBS-001",
@@ -804,18 +804,6 @@
    "fecha_registro": "2026-11-13",
    "fecha_subsanacion": "",
    "responsable": "Edinson"
-  },
-  {
-   "id": "OBS-068",
-   "frente": "",
-   "sector": "Sector 6",
-   "cuadrante": "",
-   "area": "INSPECTOR DE CAMPO",
-   "observacion": "22",
-   "descripcion": "22",
-   "fecha_registro": "",
-   "fecha_subsanacion": "",
-   "responsable": ""
   }
  ]
 }
