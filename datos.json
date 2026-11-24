@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-24T13:00:05+00:00",
+ "actualizado": "2026-11-24T13:59:35+00:00",
  "filas": [
   {
    "id": "OBS-001",
@@ -804,6 +804,18 @@
    "fecha_registro": "2026-11-13",
    "fecha_subsanacion": "",
    "responsable": "Edinson"
+  },
+  {
+   "id": "OBS-068",
+   "frente": "CENTRO DE ACOPIO DE RESIDUOS PELIGROSOS",
+   "sector": "GENERAL",
+   "cuadrante": "",
+   "area": "AMBIENTAL",
+   "observacion": "AUSENCIA DE INFORMACION DE RESIDUOS PELIGROSOS",
+   "descripcion": "SE REALIZÓ LA DISPOSICION FINAL DE RESIDUOS PELIGROSOS EN EL MES DE JUNIO Y AGOSTO DEL 2026, POR LO QUE SE REQUIERE CONTAR CON LOS CERTIFICADOS Y DOCUMENTOS QUE SUSTENTEN DICHA ELIMINACION EN LUGARES AUTORIZADOS.",
+   "fecha_registro": "2026-11-24",
+   "fecha_subsanacion": "",
+   "responsable": "ING. DE LA TORRE"
   }
  ]
 }
