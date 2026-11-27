@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-27T12:59:30+00:00",
+ "actualizado": "2026-11-27T14:00:22+00:00",
  "filas": [
   {
    "id": "OBS-001",
@@ -466,7 +466,7 @@
    "observacion": "MATERIAL EXCEDENTE ACUMULADO",
    "descripcion": "No se elimina el material excedente, solo se está realizando el acarreo de forma parcial a puntos de acopio temporal.",
    "fecha_registro": "2026-09-13",
-   "fecha_subsanacion": "",
+   "fecha_subsanacion": "2026-11-20",
    "responsable": "RONALDO"
   },
   {
@@ -816,6 +816,30 @@
    "fecha_registro": "2026-11-24",
    "fecha_subsanacion": "",
    "responsable": "ING. DE LA TORRE"
+  },
+  {
+   "id": "OBS-069",
+   "frente": "FRENTE 1",
+   "sector": "Sector 6",
+   "cuadrante": "Cuadrante 116,115",
+   "area": "ALCANTARILLADO",
+   "observacion": "AFECTACIONES A TUBERIAS DE PVC-U EN EL PROCESO DE INSTALACION DE TUBERIA DE LINA DE CONDUCCION DE AGUA POTABLE.",
+   "descripcion": "OBSERVACIÓN TÉCNICA POR AFECTACIÓN A CONEXIONES DOMICILIARIAS, BUZONES Y REPARACIÓNES DEFICIENTES DEL SISTEMAS DE ALCANTARILLADO",
+   "fecha_registro": "2026-11-19",
+   "fecha_subsanacion": "",
+   "responsable": "RONALDO"
+  },
+  {
+   "id": "OBS-070",
+   "frente": "FRENTE 3",
+   "sector": "Sector 11",
+   "cuadrante": "Cuadrante 15",
+   "area": "ALCANTARILLADO",
+   "observacion": "FALTA DE PLANOS APROBADOS DE CONEXIONES DOMICILIARIAS.",
+   "descripcion": "Se viene ejecutando la excavacion de zanjas para conexiones domiciliarias sin planos aprobados por el area de alcantarillado.",
+   "fecha_registro": "2026-11-23",
+   "fecha_subsanacion": "",
+   "responsable": "RONALDO"
   }
  ]
 }
