@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-27T20:00:27+00:00",
+ "actualizado": "2026-11-28T17:00:42+00:00",
  "filas": [
   {
    "id": "OBS-001",
@@ -840,6 +840,18 @@
    "fecha_registro": "2026-11-23",
    "fecha_subsanacion": "",
    "responsable": "RONALDO"
+  },
+  {
+   "id": "OBS-071",
+   "frente": "FRENTE 2",
+   "sector": "Sector 4",
+   "cuadrante": "Cuadrante 31",
+   "area": "INSPECTOR DE CAMPO",
+   "observacion": "TRABAJOS INCONCLUSOS",
+   "descripcion": "Los tabajos de instalcion de cajas domiciliarias se quedaron inconclusos, debido a falta de cajas domiciliarias",
+   "fecha_registro": "2026-11-25",
+   "fecha_subsanacion": "",
+   "responsable": "RAUL"
   }
  ]
 }
